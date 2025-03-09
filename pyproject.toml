@@ -1,0 +1,25 @@
+[tool.poetry]
+name = "odin"
+version = "0.1.0"
+description = "\"Automated distributed model training\""
+authors = ["StealthyPanda <shaikm259@gmail.com>"]
+readme = "README.md"
+packages = [{ include = "ocli", from = "src" }, { include = "odin", from = "src" } , { include = "raven", from = "src" }]
+
+
+[tool.poetry.dependencies]
+python = "^3.12"
+# taloslib = {git = "https://github.com/StealthyPanda/taloslib.git"}
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.poetry.scripts]
+odin = "ocli:odin"
+raven = "ocli:raven"
