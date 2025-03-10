@@ -92,9 +92,16 @@ def receive_file(sock : socket.socket, dirname : str) -> str:
             databuff = sock.recv(1024 * 4)
             if not databuff: break
             
+            if b'<end>' in databuff:
+                i = databuff.index(b'<end>')
+                file.write(databuff[:i])
+                break
+                
             file.write(databuff)
             
-            if len(databuff) < (1024 * 4): break
+                
+            
+            # if len(databuff) < (1024 * 4): break
     
     
     # with open(disk_location, 'rb') as file:
@@ -139,6 +146,8 @@ def send_data_with_progress(data : bytes, sock : socket.socket, chunk_size : int
         p = p[:K]
         
         print(f'\rSending data [{p}] {per*100:2.2f}% ETA {eta} Elapsed {elpased}', end='')
+    
+    sock.sendall(b'<end>')
     
     print()
     return True
