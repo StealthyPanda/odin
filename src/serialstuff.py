@@ -23,7 +23,7 @@ def serialize(data) -> bytes:
         return data
 
 
-def receive_json(sock : socket.socket, display : bool = False) -> str:
+def receive_json(sock : socket.socket, display : bool = False) -> dict:
     # logger.info(f'Receiving JSON data...')
     
     data = []

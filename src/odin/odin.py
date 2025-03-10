@@ -137,6 +137,28 @@ class Raven:
         target_weights_file = os.path.basename(weights_file)
         self.push_file(temploc, mname)
         self.push_file(weights_file, target_weights_file)
+    
+    
+    def exec_script(self, script_path : str, *args, **kwargs):
+        self.sock.sendall(b'<exec>')
+        
+        logger.info(f'Trying to execute `{script_path}`...')
+        
+        send_json({
+            'script' : script_path,
+            'args' : args,
+            'kwargs' : kwargs,
+        }, self.sock)
+        
+        res = receive_json(self.sock, True)
+        if res['status'] == 'OK':
+            logger.success(f'Execution complete `{script_path}`!')
+            return res
+        else:
+            logger.error(f'Execution FAILED `{script_path}`!')
+            logger.error(res['error'])
+            return res
+        
         
         
         
