@@ -107,15 +107,12 @@ def exec_script(sock : socket.socket):
     logger.info(f'Execution over for [{meta["script"]}]')
     
     
-
+def is_valid_command(command : str) -> bool:
+    return (command[0] == '<') and (command[-1] == '>')
 
 
 
 def process_command(command : str, sock : socket.socket):
-    if not ((command[0] == '<') and (command[-1] == '>')):
-        logger.error(f'Invalid command {command}')
-        return
-    
     command = command[1:-1]
     if command == 'push': return receive_file(sock, dirname)
     if command == 'json': return receive_json(sock, True)
@@ -131,7 +128,8 @@ device_data = sys_info()
 
 
 def start_server():
-    host = get_address()
+    host_add = get_address()
+    host = '0.0.0.0'
     port = 4269
     
     server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -139,7 +137,7 @@ def start_server():
     server.bind((host, port))
     
     logger.success(f'Server started!')
-    logger.debug(f'Running on raven://{host}:{port}')
+    logger.debug(f'Running on raven://{host_add}:{port}')
     
     server.listen(1)
     
@@ -160,7 +158,8 @@ def start_server():
             while True:
                 command = client_socket.recv(1024)
                 if not command : break
-                command = command.decode()
+                command = command.decode().strip()
+                if not is_valid_command(command): continue
                 
                 logger.debug(f'Command {command}')
                 
